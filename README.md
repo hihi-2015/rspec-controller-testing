@@ -9,7 +9,7 @@ This tests the #new action in the controller, we provide some examples for tests
 
 ###Context: with hitting the database
 ```ruby
-before(:each) do
+before do
   get :new
 end
 
@@ -20,9 +20,9 @@ end
 
 ###Context: without hitting the database
 ```ruby
-let(:item_double) { double("item_double")}
+let(:item_double) { double("item_double") }
 before(:each) do
-  Item.stub(:new).and_return(item_double)
+  allow(Item).to receive(:new).and_return(item_double)
   get :new
 end
 
@@ -37,17 +37,18 @@ This tests the #create action in the controller, we provide some examples for te
 ###Context: with hitting the database
 ```ruby
 it "creates a new Item" do
-  expect{
+  expect {
     post :create, item: FactoryGirl.attributes_for(:item)
-  }.to change(Item,:count).by(1)
+  }.to change(Item, :count).by(1)
 end
 ```
 ###Context: without hitting the database
 ```ruby
-let(:item_double) { double("item_double")}
-before(:each) do
-  Item.stub(:new).and_return(item_double)
-  item_double.stub(:save).and_return(true)
+let(:item_double) { double("item_double") }
+
+before do
+  allow(Item.stub).to receive(:new).and_return(item_double)
+  allow(item_double).to receive(:save).and_return(true)
 end
 
 it "creates a new item" do
@@ -66,9 +67,9 @@ This tests the #edit action in the controller, we provide some examples for test
 
 ###Context: with hitting the database
 ```ruby
-let(:item) {Item.create(first_attribute: "My name", second_attribute: 23)}
+let(:item) { Item.create(first_attribute: "My name", second_attribute: 23) }
 
-before(:each) do
+before do
   get :edit, id: item
 end
 
@@ -78,42 +79,42 @@ end
 ```
 ###Context: without hitting the database
 ```ruby
-let(:item) {double("item")}
+let(:item) { double("item") }
 
 it "finds a specific item" do
-  Todo.should_recieve(:find).once.and_return(item)
+  expect(Todo).to recieve(:find).once.and_return(item)
   get :edit, id: item
 end
 ```
 ---
-##\#Update Action
+###Update Action
 This tests the #update action in the controller, we provide some examples for tests, both hitting the database and not.
 
 ###Context: with hitting the database
 ```ruby
-let(:item) {Item.create(first_attribute: "My name", second_attribute: 23)}
+let(:item) { Item.create(first_attribute: "My name", second_attribute: 23) }
 
 it "updates an item with valid params" do
-  post :update, id: item, item: {first_attribute: "Updated name", second_attribute: 23}
+  post :update, id: item, item: { first_attribute: "Updated name", second_attribute: 23 }
   item.reload
   expect(item.first_attribute).to eq("Updated name")
 end
 ```
 ###Context: without hitting the database
 ```ruby
-let(:item) {double("todo")}
-let(:attrs) {first_attribute: "Updated name", second_attribute: 23}
+let(:item) { double("todo") }
+let(:attrs) { first_attribute: "Updated name", second_attribute: 23 }
 
 it "updates an item with valid params" do
-  Item.stub(:find).and_return(item)
-  item.should_recieve(:update_attributes).with(attrs.stringify_keys)
+  allow(Item).to receive(:find).and_return(item)
+  expect(item).to recieve(:update_attributes).with(attrs.stringify_keys)
   post :update, id: item, item: attrs
 end
 
 it "redirects to item once updated" do
   item = stub_model(Item)
-  Item.stub(:find).and_return(item)
-  item.stub(:update_attributes).and_return(true)
+  allow(Item).to receive(:find).and_return(item)
+  allow(item).to receive(:update_attributes).and_return(true)
   post :update, id: item, item: attrs
   expect(response).to redirect_to(item)
 end
