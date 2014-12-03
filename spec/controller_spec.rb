@@ -133,7 +133,7 @@ describe ItemController do
 	    #uses mocks to test that find was called and the correct id is passed
 	    #change "Todo" to the name of your Class
 	    it "finds a specific item" do
-	      Todo.should_recieve(:find).once.and_return(item)
+	      expect(Todo).to receive(:find).once.and_return(item)
 	      get :edit, id: item
 	    end
 
@@ -147,9 +147,9 @@ describe ItemController do
 #--------------------------------------#
 #          The #update action          #
 #--------------------------------------#
-	describe "#update" do 
+	describe "#update" do
 
-		context "hitting the database" do 
+		context "hitting the database" do
 
 			#this sets up an insatnce of "Item" to be used in our tests as "item"
 	  	#change "Item" and "item" as appropriate
@@ -157,7 +157,7 @@ describe ItemController do
 			let(:item) {Item.create(first_attribute: "My name", second_attribute: 23)}
 
 
-			it "updates an item with valid params" do 
+			it "updates an item with valid params" do
 				#this sends a post request to the #update item
 				#it also passes the params it needs ("id" & "item") with the update
 				post :update, id: item, item: {first_attribute: "Updated name", second_attribute: 23}
@@ -175,24 +175,24 @@ describe ItemController do
 
 			#this test assumes that validates :first_attribute, presence: true is in Item model
 			#is redundant if no params validations
-			it "renders edit if params are invalid" do 
+			it "renders edit if params are invalid" do
 				post :update, id: item, item: {first_attribute: nil, second_attribute: 23}
 				expect(response).to render_template("edit")
 			end
 		end
 
-		context "not hitting the database" do 
+		context "not hitting the database" do
 
 			#this creates a double to stand in place of @item in controller
 			let(:todo) {double("todo")}
       let(:attrs) { { first_attribute: "Updated name", second_attribute: 23} }
 
-			it "updates an item with valid params" do 
+			it "updates an item with valid params" do
 				#we define the attrs that we will send through to be updated
-			
+
 				allow(Item).to receive(:find).and_return(item)
 				#declares the method to be called in controller and what it's called with (attrs)
-				item.should_recieve(:update_attributes).with(attrs.stringify_keys)
+				expect(item).to receive(:update_attributes).with(attrs.stringify_keys)
 				post :update, id: item, item: attrs
 			end
 
@@ -207,9 +207,9 @@ describe ItemController do
 				expect(response).to redirect_to(item)
 			end
 
-			it "renders edit if params are invalid" do 
+			it "renders edit if params are invalid" do
 				#creates a double and defines the behaviour expected from update_attributes method
-				item = double("item", update_attributes: false) 
+				item = double("item", update_attributes: false)
 				allow(Item).to receive(:find).and_return(item)
 				post :update, id: 1, item: item
 				#change view to render as required
@@ -218,18 +218,3 @@ describe ItemController do
 		end
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
