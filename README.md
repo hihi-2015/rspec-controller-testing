@@ -70,7 +70,7 @@ This tests the #edit action in the controller, we provide some examples for test
 let(:item) { Item.create(first_attribute: "My name", second_attribute: 23) }
 
 before do
-  get :edit, id: item
+  get :edit, id: item.id
 end
 
 it "finds a specific item" do
@@ -81,8 +81,12 @@ end
 ```ruby
 let(:item) { double("item") }
 
+before do 
+  item.id = 1
+end 
+
 it "finds a specific item" do
-  get :edit, id: item
+  get :edit, id: item.id
   expect(Item).to recieve(:find).once.and_return(item)
 end
 ```
