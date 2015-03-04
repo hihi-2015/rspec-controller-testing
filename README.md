@@ -82,8 +82,8 @@ end
 let(:item) { double("item") }
 
 it "finds a specific item" do
-  expect(Todo).to recieve(:find).once.and_return(item)
   get :edit, id: item
+  expect(Item).to recieve(:find).once.and_return(item)
 end
 ```
 ---
