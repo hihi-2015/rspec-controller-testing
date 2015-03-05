@@ -73,7 +73,7 @@ before do
   get :edit, id: item.id
 end
 
-it "finds a specific item" do
+it "finds and returns item with specified id" do
   expect(assigns(:item)).to eq(item)
 end
 ```
@@ -85,7 +85,7 @@ before do
   get :edit, id: item.id.to_i
 end 
 
-it "finds a specific item" do
+it "finds and returns item with specified id" do
   expect(Item).to recieve(:find).with(item.id.to_i).once.and_return(item)
 end
 ```
