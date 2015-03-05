@@ -79,15 +79,14 @@ end
 ```
 ###Context: without hitting the database
 ```ruby
-let(:item) { double("item") }
+let(:item) { double("item", id: 1) }
 
 before do 
-  item.id = 1
+  get :edit, id: item.id.to_i
 end 
 
 it "finds a specific item" do
-  get :edit, id: item.id
-  expect(Item).to recieve(:find).once.and_return(item)
+  expect(Item).to recieve(:find).with(item.id.to_i).once.and_return(item)
 end
 ```
 ---
